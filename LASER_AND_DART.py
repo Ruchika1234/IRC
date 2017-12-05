@@ -63,7 +63,7 @@ for gh in range (0,200):
 					cv2.ellipse(image,cen1,size1,0.0,0.0,360, (0,0,255),5)
 					print("laser",laser_center)
 					height=abs(laser_center[1]-dart_center[1])
-					angle=math.atan(height/abs(laser_center[0]-dart_center[0]))
+					angle=math.atan(abs(laser_center[0]-dart_center[0])/height)
 					print("height", height)
 					print("angle", angle)
 					break	
