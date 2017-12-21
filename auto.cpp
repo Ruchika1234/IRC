@@ -164,7 +164,7 @@ static bool logoDetect()
 {
     cam.read(frame);
     Mat image=frame.clone();
-    Mat objectMat = imread("techfest.jpg");
+    Mat objectMat = imread("Techfest.jpg");
     int hessianValue = 1600;
     int match =30;
     bool value = false;
