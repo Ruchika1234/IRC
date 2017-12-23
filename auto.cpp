@@ -304,7 +304,7 @@ while (digitalRead(input_pin)==1)
     digitalWrite(noTechfestBlock, HIGH);
   }
 }
-while (digitalRead(input_pin)==0 && check=100)
+while (digitalRead(input_pin)==1 && check=100)
 {
   techfest= logoDetect();
   if (techfest== true)
