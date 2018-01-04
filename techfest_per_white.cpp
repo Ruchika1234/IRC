@@ -12,57 +12,43 @@ int main()
 	double white=0;
 	cvtColor(src, gray, CV_BGR2GRAY);
 	GaussianBlur(gray, blur, Size(5,5), 0,0);
-	vector<vector<Point> > contours;
-	vector<vector<Point> > approx;
-	vector<Vec4i> hire;
-	findContours(blur, contours, hire, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-	vector<RotatedRect>  mini;
-	approx.resize(contours.size());
-    	for (int d=0;d<approx.size();++d)
-    	{
-    		approxPolyDP(contours[d], approx[d], 3, true);
-		if (approx[d].size()>4)
+	vector<Vec3f>  circle;
+	HoughCircles(blur, circle, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 200, 100, 0, 0 );
+	vector<Point> neighbours;
+  /// Draw the circles detected
+  for( size_t d = 0; d < circles.size(); d++ )
+  {
+        int radius = cvRound(circle[d][2]);
+		neighbours.push_back(Point(circle[d][i][0], circle[d][i][1]));
+		for (int j=1;j<circle[i][2];++j)
 		{
-	mini.push_back(fitEllipse(Mat(contours[d])));
-	}
-}
-
-	//ellipse(src, mini[d], Scalar(0,0,255), 2, 8);
-	for (int d=0;d<mini.size();++d)
-	{
-	if (abs(mini[d].size.height-mini[d].size.width<=5))
-	{
-		ellipse(src, mini[d], Scalar(0,0,255), 2, 8);
-		vector<Point> neighbours;
-			neighbours.push_back(Point(mini[d].center.x, mini[d].center.y));
-		for (int j=1;j<mini[d].size.height && j<mini[d].size.width;++j)
-		{
-			neighbours.push_back(Point(mini[d].center.x-j, mini[d].center.y));
+			neighbours.push_back(Point(circle[d][i][0]-j, circle[d][i][1]));
 			for (int h=1;h<=j;++h)
 			{
-				neighbours.push_back(Point(mini[d].center.x-j, mini[d].center.y+h));
-				neighbours.push_back(Point(mini[d].center.x-j, mini[d].center.y-h));
+				neighbours.push_back(Point(circle[d][i][0]-j, circle[d][i][1]+h));
+				neighbours.push_back(Point(circle[d][i][0]-j, circle[d][i][1]-h));
 			}
-			neighbours.push_back(Point(mini[d].center.x+j, mini[d].center.y));
+			neighbours.push_back(Point(circle[d][i][0]+j, circle[d][i][1]));
 			for (int h=1;h<=j;++h)
 			{
-				neighbours.push_back(Point(mini[d].center.x+j, mini[d].center.y+h));
-				neighbours.push_back(Point(mini[d].center.x+j, mini[d].center.y-h));
+				neighbours.push_back(Point(circle[d][i][0]+j, circle[d][i][1]+h));
+				neighbours.push_back(Point(circle[d][i][0]+j, circle[d][i][1]-h));
 			}
-			neighbours.push_back(Point(mini[d].center.x, mini[d].center.y-j));
+			neighbours.push_back(Point(circle[d][i][0], circle[d][i][1]-j));
 			for (int h=1;h<=j;++h)
 			{
-				neighbours.push_back(Point(mini[d].center.x+h, mini[d].center.y-j));
-				neighbours.push_back(Point(mini[d].center.x-h, mini[d].center.y-j));
+				neighbours.push_back(Point(circle[d][i][0]+h, circle[d][i][1]-j));
+				neighbours.push_back(Point(circle[d][i][0]-h, circle[d][i][1]-j));
 			}
-			neighbours.push_back(Point(mini[d].center.x, mini[d].center.y+j));
+			neighbours.push_back(Point(circle[d][i][0], circle[d][i][1]+j));
 			for (int h=1;h<=j;++h)
 			{
-				neighbours.push_back(Point(mini[d].center.x+h, mini[d].center.y+j));
-				neighbours.push_back(Point(mini[d].center.x-h, mini[d].center.y+j));
+				neighbours.push_back(Point(circle[d][i][0]+h, circle[d][i][1]+j));
+				neighbours.push_back(Point(circle[d][i][0]-h, circle[d][i][1]+j));
 			}
 		}
-			for (int f=0;f<neighbours.size();++f)
+			}
+		for (int f=0;f<neighbours.size();++f)
 			{
 			double intensity= blur.at<uchar>(neighbours[f].y, neighbours[f].x);
 			//cout<<neighbours[f]<<endl;
@@ -72,8 +58,6 @@ int main()
 					white= white+1;
 				}
 			}
-}
-}
 	imshow("win", src);
 	//cout<<white;
 	waitKey(0);
